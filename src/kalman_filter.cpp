@@ -2,7 +2,8 @@
 #include <iostream>
 #include <cmath>
 
-// Bring the 'difference' between two angles into [-pi; pi] or [0; 2*pi].
+// https://stackoverflow.com/a/11126083
+// Bring the 'difference' between two angles into [-pi; pi]
 template <int K, typename T>
 T normalize(T rad) {
   // Copy the sign of the value in radians to the value of pi.
@@ -53,10 +54,6 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
 
 void KalmanFilter::UpdateRes(const VectorXd &y)
 {
-    // std::cout << "h = " << h << "\n";
-    // std::cout << "theta = " << theta << ", z(1) = " << z(1) << "\n";
-
-
     MatrixXd S = H_ * P_ * H_.transpose() + R_;
     MatrixXd K = P_ * H_.transpose() * S.inverse();
 

@@ -33,7 +33,8 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
     return rmse.array().sqrt();
 }
 
-template <typename T> int sgn(T val) {
+// https://stackoverflow.com/a/4609795
+template <typename T> T sgn(T val) {
     return (T(0) < val) - (val < T(0));
 }
 
