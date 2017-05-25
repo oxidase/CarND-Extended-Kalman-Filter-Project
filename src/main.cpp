@@ -38,15 +38,8 @@ int main()
   vector<VectorXd> estimations;
   vector<VectorXd> ground_truth;
 
-  // VectorXd xxx(4);
-  // xxx << 0,0,0,0;
-  // std::cout << tools.CalculateJacobian(xxx) << "\n";
-  // xxx << 0,1e-10,0,0;
-  // std::cout << tools.CalculateJacobian(xxx) << "\n";
-
   h.onMessage([&fusionEKF,&tools,&estimations,&ground_truth](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
-                  //std::cout << "ws = " << ws << "\n";
-                  // "42" at the start of the message means there's a websocket message event.
+    // "42" at the start of the message means there's a websocket message event.
     // The 4 signifies a websocket message
     // The 2 signifies a websocket event
 
@@ -174,7 +167,6 @@ int main()
   });
 
   h.onDisconnection([&h](uWS::WebSocket<uWS::SERVER> ws, int code, char *message, size_t length) {
-    // std::cout << "ws = " << ws << "\n";
     ws.close();
     std::cout << "Disconnected" << std::endl;
   });

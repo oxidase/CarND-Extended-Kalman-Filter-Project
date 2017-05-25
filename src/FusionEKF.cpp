@@ -106,7 +106,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
 
     float dt = (measurement_pack.timestamp_ - previous_timestamp_) / 1000000.;
-    std::cout << "dt = " << dt << "\n";
 
     //1. Modify the F matrix so that the time is integrated
     ekf_.F_ <<
