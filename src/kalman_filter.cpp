@@ -1,4 +1,16 @@
 #include "kalman_filter.h"
+#include <iostream>
+#include <cmath>
+
+// Bring the 'difference' between two angles into [-pi; pi] or [0; 2*pi].
+template <int K, typename T>
+T normalize(T rad) {
+  // Copy the sign of the value in radians to the value of pi.
+  T signed_pi = std::copysign(M_PI, rad);
+  // Set the value of difference to the appropriate signed value between pi and -pi.
+  rad = std::fmod(rad + K * signed_pi,(2 * M_PI)) - K * signed_pi;
+  return rad;
+}
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
@@ -18,22 +30,37 @@ void KalmanFilter::Init(VectorXd &x_in, MatrixXd &P_in, MatrixXd &F_in,
 }
 
 void KalmanFilter::Predict() {
-  /**
-  TODO:
-    * predict the state
-  */
+    x_ = F_ * x_;
+    P_ = F_ * P_ * F_.transpose() + Q_;
 }
 
 void KalmanFilter::Update(const VectorXd &z) {
-  /**
-  TODO:
-    * update the state by using Kalman Filter equations
-  */
+    UpdateRes(z - H_ * x_);
 }
 
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
-  /**
-  TODO:
-    * update the state by using Extended Kalman Filter equations
-  */
+    float px = x_(0), py = x_(1), vx = x_(2), vy = x_(3);
+    float rho = std::sqrt(px * px + py * py);
+    float theta = std::atan2(py, px);
+    float rho_dot = (px * vx + py * vy) / rho;
+
+    VectorXd y(3);
+    y << z(0)-rho, normalize<1>(z(1)-theta), z(2)-rho_dot;
+
+    UpdateRes(y);
+}
+
+
+void KalmanFilter::UpdateRes(const VectorXd &y)
+{
+    // std::cout << "h = " << h << "\n";
+    // std::cout << "theta = " << theta << ", z(1) = " << z(1) << "\n";
+
+
+    MatrixXd S = H_ * P_ * H_.transpose() + R_;
+    MatrixXd K = P_ * H_.transpose() * S.inverse();
+
+		// new state
+    x_ = x_ + K * y;
+    P_ = P_ - K * H_ * P_;
 }
